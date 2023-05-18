@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  4 11:51:21 2023
-
-@author: judit
-"""
-
 import pandas as pd
 import numpy as np
 import cv2
@@ -115,8 +108,6 @@ def from_pd_to_dataloader(df):
     for i, row in df.iterrows():
         # load the image from the file path in the 'image' column
         image = row['image'].copy()
-        # resize the image to 256x256 pixels
-        #image = np.array(Image.fromarray(image).resize((256, 256)))
         # convert the image to a numpy array
         image = np.array(image)
         # normalize the pixel values to be between 0 and 1
