@@ -75,11 +75,9 @@ def noisy(img, noise_type="sp"):
     
 def rotate_and_scale_image(image, angle, scale):
     height, width = image.shape[:2]
-
-    # Calcular el centre de la imatge
     center = (width // 2, height // 2)
 
-    # Definir la matriu de transformació
+    #Matriu de transformació
     M = cv2.getRotationMatrix2D(center, angle, scale)
 
     # Aplicar la transformació a la imatge
@@ -103,50 +101,30 @@ def upload_data_aug(path: str, fruits: list):
     df['fruit'] = labels
     return df.reset_index()
 
-def from_pd_to_dataloader(df):
-    images = []
-    for i, row in df.iterrows():
-        # load the image from the file path in the 'image' column
-        image = row['image'].copy()
-        # convert the image to a numpy array
-        image = np.array(image)
-        # normalize the pixel values to be between 0 and 1
-        image = image / 255.0
-        # add the image to the list of preprocessed images
-        images.append(image)
-
-    # convert the list of images to a numpy array
-    images = np.array(images)
-
-    # get the labels as a numpy array
-    labels = np.array(df['fruit'])
-    label_to_idx = {label: idx for idx, label in enumerate(set(labels))}
-    train_labels = np.array([label_to_idx[label] for label in labels])
- 
-    test_d = ImageDataset(images, train_labels)
-    test_dl = DataLoader(test_d, batch_size=32, shuffle=False)
-    return test_dl
 
 def data_augmentation(df):
-    cols = ['fruit', 'image']
-    #data augm
     images = []
     labels = []
-    df_fruit = pd.DataFrame(columns = cols)
     for img, fruit in zip(df['image'], df['fruit']):
         #colorjitter
         list_type = ['c']*3
         list_type.extend(['b']*3)
         for type_n in list_type:
             new_img = colorjitter(img, type_n)
+            new_img = np.array(new_img)
+            # normalize the pixel values to be between 0 and 1
+            new_img = new_img / 255.0
             images.append(new_img)
             labels.append(fruit)
-        
+            
         #noisy
         list_type = ['gauss']*3
         list_type.extend(['sp']*3)
         for type_n in list_type:
             new_img = noisy(img, noise_type=type_n)            
+            new_img = np.array(new_img)
+            # normalize the pixel values to be between 0 and 1
+            new_img = new_img / 255.0
             images.append(new_img)
             labels.append(fruit)
   
@@ -154,15 +132,16 @@ def data_augmentation(df):
         for i in range(5):
             angle = random.randint(20, 180)
             new_img = rotate_and_scale_image(img, angle, 1.5)
+            new_img = np.array(new_img)
+            # normalize the pixel values to be between 0 and 1
+            new_img = new_img / 255.0
             images.append(new_img)
             labels.append(fruit)
 
-    df_fruit['image'] = images
-    df_fruit['fruit'] = labels
-    df_fruit.reset_index()
-    df = pd.concat([df, df_fruit])
-    df_new = df.reset_index()
-    
-    test_dl = from_pd_to_dataloader(df_new)
+    label_to_idx = {label: idx for idx, label in enumerate(set(labels))}
+    train_labels = np.array([label_to_idx[label] for label in labels])
+ 
+    test_d = ImageDataset(images, train_labels)
+    test_dl = DataLoader(test_d, batch_size=32, shuffle=False)
     
     return test_dl
