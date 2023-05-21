@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  4 11:51:21 2023
-
-@author: judit
-"""
-
 import pandas as pd
 import numpy as np
 import cv2
@@ -69,7 +62,7 @@ def conf_matrix(y_test, y_pred, labels):
 
 def colorjitter(img, cj_type="b"):
     '''
-    ### Different Color Jitter , es pot canviar saturacio, llum o contrast###
+    ### Diferent Color Jitter , es pot canviar saturacio, llum o contrast###
     img: image
     cj_type: {b: brightness, c: contrast}
     '''
@@ -102,7 +95,7 @@ def colorjitter(img, cj_type="b"):
  
 def noisy(img, noise_type="sp"):
     '''
-    ### Adding Noise ###
+    ### Afegir soroll ###
     img: image
     cj_type: {gauss: gaussian, sp: salt & pepper}
     '''
@@ -136,6 +129,9 @@ def noisy(img, noise_type="sp"):
     
     
 def rotate_and_scale_image(image, angle, scale):
+    '''
+    ### Rotar i escalar###
+    '''
     height, width = image.shape[:2]
 
     # Calcular el centre de la imatge
