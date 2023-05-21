@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  4 11:47:48 2023
-
-@author: alexc
-"""
-
 # IMPORTS
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
